@@ -1,24 +1,21 @@
-import { startBot } from "./bot.js";
-import { AppDataSource } from "./database/dataSource.js";
+import createApp from "./app.js";
+import { env } from "./env.js";
 import { seedDatabase } from "./services/seedService.js";
 
-async function bootstrap() {
+async function init() {
+  const app = await createApp();
+
   try {
-    console.log("🚀 Inicializando sistema Multi-tenant...");
+    await app.listen({ port: env.PORT, host: "0.0.0.0" });
 
-    // 1. Conectar ao Banco
-    await AppDataSource.initialize();
-    console.log("📦 Banco de dados conectado.");
+    app.log.info(`🚀 Server running at http://localhost:${env.PORT}`);
+    app.log.info(`📚 Documentation at http://localhost:${env.PORT}/docs`);
 
-    // 2. Rodar Seeds (Criar Tenant/Queue/Instance se não existir)
-    const whatsappInstance = await seedDatabase();
-
-    // 3. Iniciar o Bot para a instância recuperada
-    // Se estiver desconectado, ele gerará o QR Code no terminal dentro do startBot
-    await startBot(whatsappInstance);
-  } catch (error) {
-    console.error("Erro fatal:", error);
+    if (env.NODE_ENV === "development") await seedDatabase();
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
   }
 }
 
-bootstrap();
+init();
