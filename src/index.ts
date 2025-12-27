@@ -1,28 +1,23 @@
 import { startBot } from "./bot.js";
 import { AppDataSource } from "./database/dataSource.js";
-import { AuthSession } from "./database/entities/AuthSession.entity.js";
-import { usePostgresAuthState } from "./services/authService.js";
+import { seedDatabase } from "./services/seedService.js";
 
 async function bootstrap() {
   try {
-    // 1. Iniciar Banco de Dados
-    console.log("Inicializando banco de dados...");
+    console.log("🚀 Inicializando sistema Multi-tenant...");
+
+    // 1. Conectar ao Banco
     await AppDataSource.initialize();
-    console.log("📦 Banco conectado com sucesso.");
+    console.log("📦 Banco de dados conectado.");
 
-    // 2. Preparar Repositório e Serviço de Auth
-    const authRepository = AppDataSource.getRepository(AuthSession);
+    // 2. Rodar Seeds (Criar Tenant/Queue/Instance se não existir)
+    const whatsappInstance = await seedDatabase();
 
-    // Aqui definimos o nome da sessão. Isso permite rodar múltiplos bots mudando apenas essa string.
-    const sessionId = "bot-principal";
-
-    const authState = await usePostgresAuthState(authRepository, sessionId);
-
-    // 3. Iniciar o Bot
-    console.log("Iniciando o Bot...");
-    await startBot(authState);
+    // 3. Iniciar o Bot para a instância recuperada
+    // Se estiver desconectado, ele gerará o QR Code no terminal dentro do startBot
+    await startBot(whatsappInstance);
   } catch (error) {
-    console.error("Erro fatal ao iniciar a aplicação:", error);
+    console.error("Erro fatal:", error);
   }
 }
 
