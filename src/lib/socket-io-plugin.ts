@@ -1,83 +1,106 @@
-import { FastifyPluginAsync } from 'fastify'
-import fp from 'fastify-plugin'
-import { Server, ServerOptions, Socket } from 'socket.io'
+import { FastifyPluginAsync } from "fastify";
+import fp from "fastify-plugin";
+import { Server, ServerOptions, Socket } from "socket.io";
 
 export interface FastifySocketIOOptions extends Partial<ServerOptions> {
-  preClose?: (done: () => void) => void
-  auth?: boolean // Habilita/desabilita autenticação (padrão: true)
+  preClose?: (done: () => void) => void;
+  auth?: boolean; // Habilita/desabilita autenticação (padrão: true)
 }
 
-declare module 'fastify' {
+declare module "fastify" {
   interface FastifyInstance {
-    io: Server
+    io: Server;
   }
 }
 
-declare module 'socket.io' {
+declare module "socket.io" {
   interface Socket {
-    userId?: string // Armazena os dados do usuário autenticado
+    userId?: string; // Armazena os dados do usuário autenticado
   }
 }
 
 const socketIOPlugin: FastifyPluginAsync<FastifySocketIOOptions> = async (
   fastify,
-  options,
+  options
 ) => {
   const defaultPreClose = (done: () => void) => {
-    fastify.io.local.disconnectSockets(true)
-    done()
-  }
+    fastify.io.local.disconnectSockets(true);
+    done();
+  };
 
-  const io = new Server(fastify.server, options)
+  const io = new Server(fastify.server, options);
 
-  // Middleware de autenticação
+  // Middleware de autenticação (MANTIDO O SEU ORIGINAL)
   if (options.auth !== false) {
     io.use(async (socket: Socket, next) => {
       try {
         // 1. Tentar obter token do cabeçalho Authorization
-        let token = socket.handshake.headers.authorization?.split(' ')[1]
+        let token = socket.handshake.headers.authorization?.split(" ")[1];
 
         // 2. Se não encontrado, tentar obter dos cookies
         if (!token && socket.handshake.headers.cookie) {
-          const cookies = fastify.parseCookie(socket.handshake.headers.cookie)
-          token = cookies.refreshToken || cookies.accessToken
+          const cookies = fastify.parseCookie(socket.handshake.headers.cookie);
+          token = cookies.refreshToken || cookies.accessToken;
         }
 
         if (!token) {
-          throw new Error('Token não fornecido')
+          throw new Error("Token não fornecido");
         }
 
         // 3. Verificar token e decodificar
         const { sub } = fastify.jwt.verify<{
-          sub: string
-        }>(token)
-        socket.userId = sub
-        next()
+          sub: string;
+        }>(token);
+        socket.userId = sub;
+        next();
       } catch (err) {
         fastify.log.error(
-          err instanceof Error ? err.message : 'Falha na autenticação',
-        )
-        next(new Error('Não autorizado'))
+          err instanceof Error ? err.message : "Falha na autenticação"
+        );
+        next(new Error("Não autorizado"));
       }
-    })
+    });
   }
 
-  fastify.decorate('io', io)
-  fastify.log.info('Socket.IO plugin inicializado')
+  // --- ADIÇÃO: Gerenciamento de Conexão e Salas ---
+  io.on("connection", (socket: Socket) => {
+    fastify.log.info(`Socket conectado: ${socket.id} (User: ${socket.userId})`);
 
-  fastify.addHook('preClose', (done) => {
-    options.preClose ? options.preClose(done) : defaultPreClose(done)
-  })
+    // Evento para entrar na sala do Tenant
+    socket.on("join-tenant", (tenantId: string | number) => {
+      if (tenantId) {
+        const roomName = `tenant:${tenantId}`;
+        socket.join(roomName);
+        fastify.log.info(`Socket ${socket.id} entrou na sala: ${roomName}`);
+      }
+    });
 
-  fastify.addHook('onClose', (_, done) => {
+    socket.on("disconnect", () => {
+      // Log opcional de desconexão
+    });
+  });
+  // ------------------------------------------------
+
+  fastify.decorate("io", io);
+  fastify.log.info("Socket.IO plugin inicializado");
+
+  fastify.addHook("preClose", (done) => {
+    if (options.preClose) {
+      options.preClose(done);
+    } else {
+      defaultPreClose(done);
+    }
+  });
+
+  fastify.addHook("onClose", (_, done) => {
     io.close(() => {
-      fastify.log.info('Servidor Socket.IO fechado')
-      done()
-    })
-  })
-}
+      fastify.log.info("Servidor Socket.IO fechado");
+      done();
+    });
+  });
+};
 
 export default fp(socketIOPlugin, {
-  name: 'socket-io-plugin',
-  fastify: '5.x',
-})
+  name: "socket-io-plugin",
+  fastify: "5.x",
+});
