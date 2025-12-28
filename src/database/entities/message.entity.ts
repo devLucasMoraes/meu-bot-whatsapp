@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Ticket } from "./Ticket.entity.js";
+import { Ticket } from "./ticket.entity.js";
 
 @Entity("messages")
 export class Message {

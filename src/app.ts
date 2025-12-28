@@ -10,12 +10,12 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from "fastify-type-provider-zod";
-import { env } from "../src/env.js";
+import { env } from "./config/env.js";
 
-import { errorHandler } from "./error-handler.js";
-import socketIoPlugin from "./lib/socket-io-plugin.js";
-import typeormPlugin from "./lib/typeorm-plugin.js";
-import whatsappPlugin from "./lib/whatsapp-plugin.js";
+import { errorHandler } from "./handlers/error/error-handler.js";
+import socketIoPlugin from "./plugins/socket-io-plugin.js";
+import typeormPlugin from "./plugins/typeorm-plugin.js";
+import whatsappPlugin from "./plugins/whatsapp-plugin.js";
 
 export default async function createApp(): Promise<FastifyInstance> {
   const app = fastify({

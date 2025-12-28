@@ -8,9 +8,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Tenant } from "./Tenant.entity.js";
-import { Ticket } from "./Ticket.entity.js";
-import { User } from "./User.entity.js";
+import { Tenant } from "./tenant.entity.js";
+import { Ticket } from "./ticket.entity.js";
+import { User } from "./user.entity.js";
 
 @Entity("queues")
 export class Queue {

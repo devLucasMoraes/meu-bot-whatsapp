@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { ZodError } from "zod";
-import { BadRequestError } from "./_errors/bad-request-error.js";
-import { UnauthorizedError } from "./_errors/unauthorized-error.js";
+import { BadRequestError } from "../../errors/bad-request-error.js";
+import { UnauthorizedError } from "../../errors/unauthorized-error.js";
 
 type FastifyErrorHandler = FastifyInstance["errorHandler"];
 export const errorHandler: FastifyErrorHandler = (error, req, res) => {

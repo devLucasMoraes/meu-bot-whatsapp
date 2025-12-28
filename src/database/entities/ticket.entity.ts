@@ -8,12 +8,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Contact } from "./Contact.entity.js";
-import { Message } from "./Message.entity.js";
-import { Queue } from "./Queue.entity.js";
-import { Tenant } from "./Tenant.entity.js";
-import { User } from "./User.entity.js";
-import { WhatsappInstance } from "./WhatsappInstance.entity.js";
+import { Contact } from "./contact.entity.js";
+import { Message } from "./message.entity.js";
+import { Queue } from "./queue.entity.js";
+import { Tenant } from "./tenant.entity.js";
+import { User } from "./user.entity.js";
+import { WhatsappInstance } from "./whatsappInstance.entity.js";
 
 export enum TicketStatus {
   PENDING = "pending",

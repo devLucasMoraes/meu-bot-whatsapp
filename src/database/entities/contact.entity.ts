@@ -8,8 +8,8 @@ import {
   Unique,
   UpdateDateColumn,
 } from "typeorm";
-import { Tenant } from "./Tenant.entity.js";
-import { Ticket } from "./Ticket.entity.js";
+import { Tenant } from "./tenant.entity.js";
+import { Ticket } from "./ticket.entity.js";
 
 @Entity("contacts")
 @Unique(["number", "tenantId"])

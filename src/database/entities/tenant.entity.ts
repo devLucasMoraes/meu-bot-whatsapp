@@ -6,9 +6,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Ticket } from "./Ticket.entity.js";
-import { User } from "./User.entity.js";
-import { WhatsappInstance } from "./WhatsappInstance.entity.js";
+import { Ticket } from "./ticket.entity.js";
+import { User } from "./user.entity.js";
+import { WhatsappInstance } from "./whatsappInstance.entity.js";
 
 @Entity("tenants")
 export class Tenant {

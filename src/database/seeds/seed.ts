@@ -1,8 +1,8 @@
-import { AppDataSource } from "../database/dataSource.js";
-import { Queue } from "../database/entities/Queue.entity.js";
-import { Tenant } from "../database/entities/Tenant.entity.js";
-import { User } from "../database/entities/User.entity.js";
-import { WhatsappInstance } from "../database/entities/WhatsappInstance.entity.js";
+import { AppDataSource } from "../data-source.js";
+import { Queue } from "../entities/queue.entity.js";
+import { Tenant } from "../entities/tenant.entity.js";
+import { User } from "../entities/user.entity.js";
+import { WhatsappInstance } from "../entities/whatsappInstance.entity.js";
 
 export async function seedDatabase() {
   const tenantRepo = AppDataSource.getRepository(Tenant);

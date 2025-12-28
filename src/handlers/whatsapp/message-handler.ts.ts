@@ -2,11 +2,11 @@ import { Mutex } from "async-mutex"; // Importação nova
 import { jidNormalizedUser, proto, WASocket } from "baileys";
 import { FastifyInstance } from "fastify";
 import { In } from "typeorm";
-import { Contact } from "../database/entities/Contact.entity.js";
-import { Message } from "../database/entities/Message.entity.js";
-import { Queue } from "../database/entities/Queue.entity.js";
-import { Ticket, TicketStatus } from "../database/entities/Ticket.entity.js";
-import { WhatsappInstance } from "../database/entities/WhatsappInstance.entity.js";
+import { Contact } from "../../database/entities/contact.entity.js";
+import { Message } from "../../database/entities/message.entity.js";
+import { Queue } from "../../database/entities/queue.entity.js";
+import { Ticket, TicketStatus } from "../../database/entities/ticket.entity.js";
+import { WhatsappInstance } from "../../database/entities/whatsappInstance.entity.js";
 
 // Armazena um Mutex para cada contato/número
 const contactMutexes = new Map<string, Mutex>();

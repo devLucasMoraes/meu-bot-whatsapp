@@ -7,7 +7,7 @@ import {
   SignalDataTypeMap,
 } from "baileys";
 import { Repository } from "typeorm";
-import { AuthSession } from "../database/entities/AuthSession.entity.js";
+import { AuthSession } from "../database/entities/auth-session.entity.js";
 
 /**
  * usePostgresAuthState

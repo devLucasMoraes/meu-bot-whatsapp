@@ -1,6 +1,6 @@
 import createApp from "./app.js";
-import { env } from "./env.js";
-import { seedDatabase } from "./services/seedService.js";
+import { env } from "./config/env.js";
+import { seedDatabase } from "./database/seeds/seed.js";
 
 async function init() {
   const app = await createApp();
