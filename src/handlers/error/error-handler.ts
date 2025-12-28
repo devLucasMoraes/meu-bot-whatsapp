@@ -1,26 +1,27 @@
-import type { FastifyInstance } from "fastify";
-import { ZodError } from "zod";
+import type { FastifyError, FastifyInstance } from "fastify";
+import { z, ZodError } from "zod";
 import { BadRequestError } from "../../errors/bad-request-error.js";
 import { UnauthorizedError } from "../../errors/unauthorized-error.js";
 
 type FastifyErrorHandler = FastifyInstance["errorHandler"];
+
 export const errorHandler: FastifyErrorHandler = (error, req, res) => {
   if (error instanceof ZodError) {
     return res.status(400).send({
       statusCode: 400,
       message: "Validation error",
-      errors: error.flatten().fieldErrors,
+      errors: z.treeifyError(error),
     });
   }
 
-  if (error.validation) {
+  const fastifyError = error as FastifyError;
+
+  if (fastifyError.validation) {
     const errors: Record<string, string[]> = {};
 
-    for (const validationError of error.validation) {
-      // Remove a barra inicial do caminho, se houver
+    for (const validationError of fastifyError.validation) {
       const path = validationError.instancePath.substring(1) || "_error";
 
-      // Adiciona a mensagem de erro ao caminho correspondente
       if (!errors[path]) {
         errors[path] = [];
       }
