@@ -1,6 +1,5 @@
 import createApp from "./app.js";
 import { env } from "./config/env.js";
-import { seedDatabase } from "./database/seeds/seed.js";
 import registerRoutes from "./routes/index.js";
 
 async function init() {
@@ -13,7 +12,7 @@ async function init() {
     app.log.info(`🚀 Server running at http://localhost:${env.PORT}`);
     app.log.info(`📚 Documentation at http://localhost:${env.PORT}/docs`);
 
-    if (env.NODE_ENV === "development") await seedDatabase();
+    //if (env.NODE_ENV === "development") await seedDatabase();
   } catch (err) {
     app.log.error(err);
     process.exit(1);
