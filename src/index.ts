@@ -1,9 +1,11 @@
 import createApp from "./app.js";
 import { env } from "./config/env.js";
 import { seedDatabase } from "./database/seeds/seed.js";
+import registerRoutes from "./routes/index.js";
 
 async function init() {
   const app = await createApp();
+  await registerRoutes(app);
 
   try {
     await app.listen({ port: env.PORT, host: "0.0.0.0" });
