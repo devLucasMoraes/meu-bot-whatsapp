@@ -4,8 +4,8 @@ import { FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 import { AuthSession } from "../database/entities/auth-session.entity.js";
 import { WhatsappInstance } from "../database/entities/whatsappInstance.entity.js";
-import { handleIncomingMessage } from "../handlers/whatsapp/message-handler.ts.js";
-import { usePostgresAuthState } from "../services/auth-service.ts.js";
+import { handleIncomingMessage } from "../handlers/whatsapp/message-handler.js";
+import { usePostgresAuthState } from "../services/auth-service.js";
 
 // Tipagem para o Fastify reconhecer o plugin
 declare module "fastify" {
